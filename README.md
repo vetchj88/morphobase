@@ -1,9 +1,9 @@
 # MorphoBASE v1.3: Organism-First Adaptive Intelligence
-
+Whitepaper via open science framework [https://osf.io/z3ke6 via @OsfFramework ](https://osf.io/z3ke6/overview)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
-**MorphoBASE** is a computational substrate that inverts the standard machine learning design sequence. Instead of building a task optimizer and retrofitting adaptation, we build a synthetic multicellular body with explicit physiology—metabolism, stress, repair, growth control, and setpoint memory—and attach task competence through boundary ports.
+**MorphoBASE** is a computational substrate that inverts the standard machine learning design sequence. Instead of building a task optimizer and retrofitting adaptation, we build a synthetic multicellular body with explicit physiology (including: metabolism, stress, repair, growth control) and setpoint memoryand attach task competence through boundary ports.
 
 This project is inspired by research in developmental biology and bioelectric signaling (notably the work of Michael Levin and colleagues), exploring how multi-scale competency and homeostatic maintenance can drive robust AI adaptation.
 
@@ -27,7 +27,7 @@ A detailed analysis of the architecture, methodology, and experimental results c
 
 ```bash
 # Clone the repository
-git clone https://github.com/justin/morphobase.git
+git clone https://github.com/vetchj88/morphobase.git
 cd morphobase
 
 # Create and activate a virtual environment
@@ -80,13 +80,7 @@ MorphoBASE v1.3 has been validated across 25+ assays with matched ablation contr
 
 If you use MorphoBASE in your research, please cite the whitepaper:
 
-```bibtex
-@article{morphobase2026,
-  title={MorphoBASE v1.3: A Computational Substrate for Organism-First Adaptive Intelligence},
-  author={Justin Vetch},
-  year={2026},
-  journal={Internal Report / GitHub Repository}
-}
+MorphoBASE: A Computational Substrate for Organism-First Adaptive Intelligence https://osf.io/z3ke6 via @OsfFramework 
 ```
 
 ## ⚖️ License
