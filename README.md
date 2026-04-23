@@ -83,7 +83,7 @@ If you use MorphoBASE in your research, please cite the whitepaper:
 ```bibtex
 @article{morphobase2026,
   title={MorphoBASE v1.3: A Computational Substrate for Organism-First Adaptive Intelligence},
-  author={Justin},
+  author={Justin Vetch},
   year={2026},
   journal={Internal Report / GitHub Repository}
 }
