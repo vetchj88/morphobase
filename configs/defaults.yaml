@@ -1,0 +1,25 @@
+run:
+  name: morphobase_smoke
+  output_dir: artifacts
+  save_plots: true
+  summary_name: summary.md
+  registry_name: run_registry.csv
+  seed: 42
+runtime:
+  total_steps: 64
+  dt: 1.0
+  log_every: 8
+body:
+  num_cells: 16
+  hidden_dim: 8
+  energy_init: 1.0
+  stress_init: 0.0
+  plasticity_init: 0.5
+  z_alignment_init: 0.0
+assay:
+  name: smoke
+  noise_scale: 0.01
+  target_value: 0.75
+logging:
+  level: INFO
+  event_log_name: events.jsonl

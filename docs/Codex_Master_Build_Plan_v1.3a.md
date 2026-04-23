@@ -1,0 +1,86 @@
+# Codex Master Build Plan v1.3a
+
+This plan translates the existing v1.3a specification into an execution contract for Codex work. It stays anchored to the current repository shape, the organism-first rules in the master architecture, and the Levin-inspired requirement that morphology, repair, and setpoint dynamics be tested through intervention rather than story.
+
+## Load-bearing guardrails
+
+- Keep the organism primary and benchmarks secondary. No benchmark-specific imports should leak into `morphobase/organism`, `morphobase/cells`, `morphobase/communication`, or `morphobase/development`.
+- Treat the Z-field as a named setpoint scaffold, not a generic global bias.
+- Treat plasticity maintenance as physiology. Stable-but-nonlearning runs count as pathology, not success.
+- Advance only by assay gates. A mechanism is not complete until it has implementation, diagnostics, a tiny assay, and an ablation path.
+- Prefer perturbation-defined evidence. Lesion, remap, channel-block, and setpoint-rewrite probes carry more weight than clean nominal runs.
+
+## What the repo already has
+
+- The v1.3a package layout is in place and largely matches the target architecture.
+- Core scaffolding exists for config loading, deterministic seeds, registry logging, snapshots, toy ports, and starter assays.
+- The current weak spot is orchestration: the scripts do not yet enforce the sequential assay ladder, do not scaffold the full assay-config surface, and do not give Codex a single build runner aligned to the spec.
+
+## Codex build order
+
+### Phase 0: Lock the execution contract
+
+- Keep `scripts/run_assay.py` as the one canonical single-run executor.
+- Make artifact writing deterministic and reusable by other scripts.
+- Scaffold configs for every registered assay so the assay surface matches the package surface.
+- Use `configs/build/master_ladder.yaml` as the first machine-readable build ladder.
+
+Exit evidence:
+- every registered assay has a config path or can be scaffolded in one command
+- one runner writes config, event log, summary, plots, and registry row consistently
+
+### Phase 1: Substrate survival and identity
+
+- Run `smoke`, `identity`, `wound_closure`, and `stress_recruitment` as the daily proving ground.
+- Keep the claims small: bounded rollout, identity maintenance, lesion response, and stress-guided coordination.
+- Refuse to interpret higher-level competence until these assays stop failing for boring reasons.
+
+Exit evidence:
+- no trivial divergence
+- viable active-cell counts under perturbation
+- non-flat Z-alignment traces under identity and rewrite pressure
+
+### Phase 2: Growth, compensation, and plasticity maintenance
+
+- Use `growth_usefulness`, `compensation_block`, and `plasticity_stress` to separate healthy adaptation from pseudo-maturity.
+- Add stronger run classification around dormant fraction, conductance collapse, premature stage lock, and dead-field behavior.
+- Wire renewal and dedifferentiation work to explicit failure signatures from these assays.
+
+Exit evidence:
+- compensation survives blocked channels without catastrophic collapse
+- dormant-fraction and learning-readiness metrics stay inside configured ceilings
+- growth changes capacity or recovery, not just body size
+
+### Phase 3: Setpoint memory and perturbation reach
+
+- Use `setpoint_rewrite`, `lightcone`, and `lesion_battery` as the first strong tests of Levin-style organism memory.
+- Prioritize cryptic phenotype logic: transient perturbation now, changed regeneration outcome later.
+- Treat the light cone as a measured perturbation footprint, not metaphor.
+
+Exit evidence:
+- measurable Z-field response under rewrite probes
+- reproducible perturbation reach above a nonzero floor
+- lesion battery behavior stays classifiable and nontrivial
+
+## Immediate implementation backlog
+
+1. Harden the script layer.
+2. Expand config coverage to the full assay registry.
+3. Upgrade run verdicts from simple alert checks to richer classifiable outcomes.
+4. Add ablation-aware reporting so each mechanism can be compared with and without its key channel.
+5. Backfill tests for the new script surface before deeper physiology work resumes.
+
+## Levin-faithful interpretation rules
+
+- Prefer collective coordination primitives over centralized controllers.
+- Let connectivity and physiology co-regulate each other whenever possible.
+- Treat regeneration as return to a goal-conditioned attractor family, not replay of a fixed trajectory.
+- Reserve “morphological memory” language for cases that survive intervention and re-lesion, especially cryptic rewrite assays.
+
+## What Codex started in this pass
+
+- a reusable single-run execution path in `scripts/run_assay.py`
+- a config scaffolder for all registered assays in `scripts/scaffold_assay_configs.py`
+- a machine-readable build ladder in `configs/build/master_ladder.yaml`
+- a sequential master runner in `scripts/run_master_build.py`
+- a repaired combined-summary exporter in `scripts/export_summary.py`

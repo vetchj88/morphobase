@@ -1,0 +1,444 @@
+name: codex_master_build_v1_3a
+phases:
+  - name: phase_0_substrate_survival
+    description: Prove the minimal body is stable before adding stronger organism claims.
+    steps:
+      - assay: smoke
+        config: configs/assay/smoke.yaml
+        gates:
+          mean_energy:
+            min: 0.2
+          active_cell_count:
+            min: 8
+          dormant_fraction:
+            max: 0.8
+  - name: phase_1_identity_and_repair
+    description: Verify identity maintenance, wound closure, and stress-guided recruitment on tiny assays.
+    steps:
+      - assay: identity
+        config: configs/assay/identity.yaml
+        gates:
+          mean_z_alignment:
+            min: 0.05
+      - assay: wound_closure
+        config: configs/assay/wound_closure.yaml
+        gates:
+          mean_energy:
+            min: 0.15
+          active_cell_count:
+            min: 8
+      - assay: stress_recruitment
+        config: configs/assay/stress_recruitment.yaml
+        gates:
+          mean_stress:
+            max: 0.75
+  - name: phase_2_growth_compensation_and_plasticity
+    description: Expand toward regulated growth, compensation, and plasticity preservation before longer sequences.
+    steps:
+      - assay: growth_usefulness
+        config: configs/assay/growth_usefulness.yaml
+        gates:
+          mean_energy:
+            min: 0.1
+          growth_utility_gain:
+            min: 0.01
+          growth_efficiency_advantage:
+            min: 0.005
+          mean_growth_decorative_fraction:
+            max: 0.05
+          late_growth_event_fraction_mean:
+            max: 0.05
+      - assay: compensation_block
+        config: configs/assay/compensation_block.yaml
+        gates:
+          active_cell_count:
+            min: 8
+      - assay: plasticity_stress
+        config: configs/assay/plasticity_stress.yaml
+        gates:
+          dormant_fraction:
+            max: 0.85
+  - name: phase_3_setpoint_and_lightcone
+    description: Only claim higher-order organism memory once setpoint rewrite and perturbation reach are measurable.
+    steps:
+      - assay: setpoint_rewrite
+        config: configs/assay/setpoint_rewrite.yaml
+        gates:
+          rewrite_mode_supported_count:
+            min: 1
+          strong_cryptic_mode_count:
+            min: 1
+          rewrite_persistence:
+            min: 0.10
+          z_bias_rewrite_persistence_min:
+            min: 0.18
+          conductance_bias_rewrite_persistence_min:
+            min: 0.18
+          stress_bias_rewrite_persistence_min:
+            min: 0.18
+          pre_lesion_visible_context_divergence:
+            max: 0.25
+          hidden_z_memory_gap_advantage:
+            min: 0.10
+      - assay: lightcone
+        config: configs/assay/lightcone.yaml
+        gates:
+          lightcone_radius:
+            min: 4
+          lightcone_duration:
+            min: 8
+          lightcone_spread_radius_mean:
+            min: 8
+          lightcone_spread_duration:
+            min: 24
+          lightcone_port_duration:
+            min: 24
+          lightcone_ablation_supported_count:
+            min: 3
+          stress_sharing_off_ablation_support_score:
+            min: 7
+          stress_sharing_off_spread_radius_mean_delta:
+            min: 5
+          stress_sharing_off_spread_duration_delta:
+            min: 40
+          stress_sharing_off_port_duration_delta:
+            min: 40
+          stress_sharing_off_strong_port_onset_delay:
+            min: 80
+          conductance_ablated_ablation_support_score:
+            min: 7
+          conductance_ablated_spread_radius_mean_delta:
+            min: 10
+          conductance_ablated_spread_duration_delta:
+            min: 80
+          conductance_ablated_port_impact_delta:
+            min: 0.05
+          conductance_ablated_strong_port_onset_delay:
+            min: 80
+          conductance_ablated_port_balance_shift:
+            min: 0.20
+          z_memory_ablated_ablation_support_score:
+            min: 7
+          z_memory_ablated_spread_duration_delta:
+            min: 60
+          z_memory_ablated_port_duration_delta:
+            min: 60
+          z_memory_ablated_port_balance_shift:
+            min: 0.50
+          z_memory_ablated_preferred_side_switch:
+            min: 1
+          z_memory_ablated_lightcone_right_strong_port_onset:
+            min: 200
+      - assay: lesion_battery
+        config: configs/assay/lesion_battery.yaml
+        gates:
+          lesion_recovery_mean:
+            min: 0.35
+          lesion_success_fraction:
+            min: 0.5
+          lesion_recovery_probability_mean:
+            min: 0.6
+          lesion_recovery_steps_mean:
+            max: 120
+          lesion_energy_cost_mean:
+            max: 6.0
+          no_gradient_recovery_mean:
+            min: 0.5
+          no_gradient_recovery_probability_mean:
+            min: 0.6
+          recovery_retention_without_gradients:
+            min: 0.5
+          retraining_recovery_probability_mean:
+            min: 0.8
+          organismal_recovery_vs_retraining_ratio:
+            min: 0.75
+          repeated_injury_no_gradient_recovery_mean:
+            min: 0.5
+          repeated_injury_vs_retraining_ratio:
+            min: 0.6
+          cell_ablation_recovery:
+            min: 0.9
+          parameter_corruption_recovery_probability:
+            min: 1
+          parameter_corruption_recovery:
+            min: 0.45
+          parameter_corruption_no_gradient_recovery:
+            min: 0.25
+          targeted_tissue_ablation_recovery_probability:
+            min: 1
+          port_disruption_recovery:
+            min: 0.5
+          port_disruption_no_gradient_recovery_probability:
+            min: 1
+          port_disruption_distal_sparing_fraction:
+            min: 0.5
+          port_disruption_boundary_locality_ratio:
+            min: 2.0
+          port_localization_advantage:
+            min: 0.1
+          port_boundary_locality_advantage:
+            min: 1.0
+          repeated_cell_ablation_recovery_probability:
+            min: 1
+          repeated_port_disruption_recovery:
+            min: 0.5
+      - assay: lesion_preserves_competence
+        config: configs/assay/lesion_preserves_competence.yaml
+        gates:
+          pre_lesion_competence:
+            min: 0.72
+          post_recovery_competence:
+            min: 0.72
+          competence_retention_ratio:
+            min: 0.95
+          organismal_competence_advantage_vs_no_gradient:
+            min: 0.03
+          organismal_competence_vs_retraining_ratio:
+            min: 0.95
+          competence_supported_lesion_count:
+            min: 4
+          competence_supported_task_count:
+            min: 2
+          relay_tracking_post_recovery_competence:
+            min: 0.72
+          relay_tracking_competence_retention_ratio:
+            min: 0.95
+          relay_tracking_supported_lesion_count:
+            min: 2
+          inverted_remap_post_recovery_competence:
+            min: 0.72
+          inverted_remap_competence_retention_ratio:
+            min: 0.95
+          inverted_remap_supported_lesion_count:
+            min: 2
+      - assay: port_remap
+        config: configs/assay/port_remap.yaml
+        gates:
+          pre_remap_competence:
+            min: 0.70
+          post_recovery_competence:
+            min: 0.76
+          competence_retention_ratio:
+            min: 0.98
+          whole_body_post_recovery_competence:
+            min: 0.75
+          local_vs_whole_body_competence_advantage:
+            min: -0.03
+          boundary_locality_ratio:
+            min: 1.60
+          boundary_locality_advantage:
+            min: 0.50
+          port_localization_advantage:
+            min: 0.50
+          port_remap_mode_supported_count:
+            min: 3
+          supported_port_family_count:
+            min: 2
+          rule_post_recovery_competence:
+            min: 0.70
+          rule_competence_retention_ratio:
+            min: 0.98
+          rule_boundary_locality_ratio:
+            min: 1.35
+          rule_supported_mode_count:
+            min: 1
+          pattern_post_recovery_competence:
+            min: 0.84
+          pattern_competence_retention_ratio:
+            min: 0.97
+          pattern_boundary_locality_ratio:
+            min: 1.85
+          pattern_supported_mode_count:
+            min: 2
+          cross_port_competence_gap:
+            max: 0.20
+  - name: phase_4_visual_bridge_sanity
+    description: Use MNIST only as a ported sanity chamber once the organism-first evidence is already in place.
+    steps:
+      - assay: mnist_sanity
+        config: configs/assay/mnist_sanity.yaml
+        gates:
+          mnist_eval_accuracy:
+            min: 0.35
+          mnist_accuracy_advantage:
+            min: 0.12
+          mnist_mean_margin:
+            min: 0.05
+          mnist_support_count:
+            min: 30
+          mnist_eval_count:
+            min: 30
+          mean_energy:
+            min: 0.80
+          mean_stress:
+            max: 0.20
+  - name: phase_5_split_mnist_bridge
+    description: Establish the first sequential visual bridge on top of the explicit MNIST port without treating it as generality proof.
+    steps:
+      - assay: split_mnist
+        config: configs/assay/split_mnist.yaml
+        gates:
+          split_mnist_final_accuracy_mean:
+            min: 0.35
+          split_mnist_peak_accuracy_mean:
+            min: 0.45
+          split_mnist_mean_forgetting:
+            max: 0.20
+          split_mnist_bwt:
+            min: -0.20
+          split_mnist_mean_margin:
+            min: 0.05
+          split_mnist_first_task_final_accuracy:
+            min: 0.70
+          split_mnist_last_task_accuracy:
+            min: 0.20
+          split_mnist_support_count:
+            min: 100
+          split_mnist_eval_count:
+            min: 60
+          mean_energy:
+            min: 0.80
+          mean_stress:
+            max: 0.20
+  - name: phase_6_permuted_mnist_stressor
+    description: Use Permuted-MNIST as a controlled distribution-shift stressor once the Split-MNIST bridge is already stable.
+    steps:
+      - assay: permuted_mnist
+        config: configs/assay/permuted_mnist.yaml
+        gates:
+          permuted_mnist_final_accuracy_mean:
+            min: 0.28
+          permuted_mnist_peak_accuracy_mean:
+            min: 0.33
+          permuted_mnist_mean_forgetting:
+            max: 0.10
+          permuted_mnist_bwt:
+            min: -0.08
+          permuted_mnist_mean_margin:
+            min: 0.02
+          permuted_mnist_first_task_final_accuracy:
+            min: 0.30
+          permuted_mnist_last_task_accuracy:
+            min: 0.25
+          permuted_mnist_support_count:
+            min: 400
+          permuted_mnist_eval_count:
+            min: 250
+          mean_energy:
+            min: 0.80
+          mean_stress:
+            max: 0.20
+  - name: phase_7_split_fashion_mnist_diversity
+    description: Extend the visual bridge to a richer grayscale family before claiming broader benchmark transfer.
+    steps:
+      - assay: split_fashion_mnist
+        config: configs/assay/split_fashion_mnist.yaml
+        gates:
+          split_fashion_mnist_final_accuracy_mean:
+            min: 0.35
+          split_fashion_mnist_peak_accuracy_mean:
+            min: 0.50
+          split_fashion_mnist_mean_forgetting:
+            max: 0.25
+          split_fashion_mnist_bwt:
+            min: -0.25
+          split_fashion_mnist_mean_margin:
+            min: 0.05
+          split_fashion_mnist_first_task_final_accuracy:
+            min: 0.35
+          split_fashion_mnist_last_task_accuracy:
+            min: 0.30
+          split_fashion_mnist_support_count:
+            min: 100
+          split_fashion_mnist_eval_count:
+            min: 60
+          mean_energy:
+            min: 0.85
+          mean_stress:
+            max: 0.15
+  - name: phase_8_permuted_fashion_mnist_variant
+    description: Stabilize the richer grayscale permutation bridge before moving from Stack C into the non-visual generality tasks.
+    steps:
+      - assay: permuted_fashion_mnist
+        config: configs/assay/permuted_fashion_mnist.yaml
+        gates:
+          permuted_fashion_mnist_final_accuracy_mean:
+            min: 0.24
+          permuted_fashion_mnist_peak_accuracy_mean:
+            min: 0.26
+          permuted_fashion_mnist_mean_forgetting:
+            max: 0.05
+          permuted_fashion_mnist_bwt:
+            min: 0.0
+          permuted_fashion_mnist_mean_margin:
+            min: 0.05
+          permuted_fashion_mnist_first_task_final_accuracy:
+            min: 0.28
+          permuted_fashion_mnist_last_task_accuracy:
+            min: 0.24
+          permuted_fashion_mnist_support_count:
+            min: 400
+          permuted_fashion_mnist_eval_count:
+            min: 250
+          mean_energy:
+            min: 0.95
+          mean_stress:
+            max: 0.05
+  - name: phase_9_control_remap_bridge
+    description: Prove the substrate can handle a tiny non-visual control task with shifted reward zones and explicit port remaps.
+    steps:
+      - assay: gridworld_remap
+        config: configs/assay/gridworld_remap.yaml
+        gates:
+          gridworld_remap_final_success_mean:
+            min: 0.75
+          gridworld_remap_peak_success_mean:
+            min: 0.80
+          gridworld_remap_mean_forgetting:
+            max: 0.10
+          gridworld_remap_bwt:
+            min: 0.0
+          gridworld_remap_mean_margin:
+            min: 0.10
+          gridworld_remap_efficiency_mean:
+            min: 0.45
+          gridworld_remap_first_task_final_success:
+            min: 0.75
+          gridworld_remap_last_task_success:
+            min: 0.45
+          gridworld_remap_support_count:
+            min: 150
+          gridworld_remap_eval_count:
+            min: 60
+          mean_energy:
+            min: 0.95
+          mean_stress:
+            max: 0.30
+  - name: phase_10_nonvisual_rules_bridge
+    description: Prove the same substrate can run a non-visual symbolic sequence family before broader generality claims.
+    steps:
+      - assay: sequential_rules
+        config: configs/assay/sequential_rules.yaml
+        gates:
+          sequential_rules_final_accuracy_mean:
+            min: 0.65
+          sequential_rules_peak_accuracy_mean:
+            min: 0.75
+          sequential_rules_mean_forgetting:
+            max: 0.10
+          sequential_rules_bwt:
+            min: -0.05
+          sequential_rules_mean_margin:
+            min: 0.10
+          sequential_rules_first_task_final_accuracy:
+            min: 0.90
+          sequential_rules_last_task_accuracy:
+            min: 0.50
+          sequential_rules_support_count:
+            min: 100
+          sequential_rules_eval_count:
+            min: 60
+          mean_energy:
+            min: 0.90
+          mean_stress:
+            max: 0.10

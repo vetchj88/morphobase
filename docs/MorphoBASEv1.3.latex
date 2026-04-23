@@ -1,0 +1,1115 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\hypertarget{morphobase-v1.3-a-computational-substrate-for-organism-first-adaptive-intelligence}{%
+\section{MorphoBASE v1.3: A Computational Substrate for Organism-First
+Adaptive
+Intelligence}\label{morphobase-v1.3-a-computational-substrate-for-organism-first-adaptive-intelligence}}
+
+Author: Justin Vetch Date: March 2026
+
+\hypertarget{abstract}{%
+\subsection{Abstract}\label{abstract}}
+
+We present MorphoBASE v1.3, a computational substrate that inverts the
+standard machine learning design sequence: instead of building a task
+optimizer and retrofitting adaptation, we build a synthetic
+multicellular body with explicit physiology (metabolism, stress, repair,
+growth control, conductance, and setpoint memory) and attach task
+competence through boundary ports. The system is organized around
+principles drawn from developmental biology and bioelectric signaling
+research, particularly the multi-scale competency architecture described
+by Levin and colleagues.
+
+v1.3 demonstrates several organism-level properties through a suite of
+25 assays with matched ablation controls:
+
+\begin{itemize}
+\item
+  \begin{quote}
+  \textbf{Lesion recovery}: 84.95\% mean morphological recovery across
+  lesion types, with 76.64\% recovery relative to full retraining
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Competence preservation}: 98.94\% task competence retention
+  after injury, measured across multiple task families
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Gradient-free recovery}: organisms recover function without
+  gradient-based retraining during rollout (recovery-without-gradients
+  ratio: 1.17)
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Setpoint memory}: hidden anatomical memory persists separately
+  from expressed state (hidden-memory gap advantage: 0.40)
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Selective growth}: growth events are repair-oriented with zero
+  decorative growth fraction
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Boundary-local adaptation}: port remapping remains localized
+  (boundary locality ratio: 1.69) while preserving 98.24\% competence
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Measurable perturbation propagation}: a causal "light cone"
+  that changes interpretably under channel-specific ablation
+  \end{quote}
+\end{itemize}
+
+Task performance on standard continual-learning benchmarks is modest
+(27--47\% across MNIST/FashionMNIST variants, 82--85\% on non-visual
+tasks). This is expected: the system was not designed to maximize
+benchmark scores. The benchmarks serve as validation that organismal
+mechanisms produce real task competence, not as the primary
+contribution.
+
+The primary contribution is a working, testable computational substrate
+in which repair, memory, and adaptation are properties of the body
+rather than features of a task-specific model.
+
+\hypertarget{introduction}{%
+\subsection{1. Introduction}\label{introduction}}
+
+\hypertarget{motivation}{%
+\subsubsection{1.1 Motivation}\label{motivation}}
+
+Most machine learning systems are designed around task optimization.
+Adaptation, robustness, and continual learning are added as secondary
+properties (regularization terms, replay buffers, architectural tricks)
+layered onto systems whose core design is benchmark performance.
+
+Biological organisms take the opposite approach. A planarian regenerates
+its head not because it has a loss function for head-having, but because
+it maintains an anatomical setpoint that guides repair. Its competence
+at navigating its environment survives the injury because that
+competence is embedded in a body that actively maintains itself. The
+body is primary; task performance is a consequence.
+
+This perspective has been developed extensively in the work of Levin and
+colleagues on bioelectric signaling, multi-scale competency, and
+goal-directed behavior in biological systems {[}1--5{]}. The key insight
+is that biological intelligence operates at multiple scales
+simultaneously: individual cells make local homeostatic decisions,
+groups of cells coordinate through bioelectric and chemical signaling,
+and the whole organism exhibits goal-directed behavior that emerges from
+--- but is not reducible to --- these lower-level dynamics.
+
+MorphoBASE asks whether this organizational principle can be
+instantiated computationally: can we build a synthetic body where task
+competence emerges from organismal maintenance rather than being
+engineered directly?
+
+\hypertarget{scope-and-honest-framing}{%
+\subsubsection{1.2 Scope and honest
+framing}\label{scope-and-honest-framing}}
+
+MorphoBASE v1.3 is a research prototype. It is not a state-of-the-art
+continual learning system by benchmark standards. Its visual task
+performance (27--47\% on MNIST/FashionMNIST variants) is well below
+specialized continual learning methods.
+
+What it does demonstrate is that a system built around explicit
+physiology --- with no benchmark-specific logic in its core --- can
+exhibit measurable repair, memory, competence preservation, and adaptive
+growth. These properties are tested through ablation controls, not
+claimed through analogy.
+
+The intended audience for this work is researchers interested in
+organism-inspired computation, bioelectric signaling models, and
+alternative computational substrates --- not the continual learning
+leaderboard community.
+
+\hypertarget{architecture}{%
+\subsection{2. Architecture}\label{architecture}}
+
+\hypertarget{the-body}{%
+\subsubsection{2.1 The body}\label{the-body}}
+
+The central runtime object is a Body that evolves a multicellular
+OrganismState across three clocks:
+
+\begin{itemize}
+\item
+  \begin{quote}
+  \textbf{Fast clock} (every step): local cell-state updates, metabolic
+  dynamics, stress and plasticity regulation
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Medium clock} (every 4 steps): communication fields,
+  conductance coupling, Z-memory alignment, tissue fields, oscillatory
+  and predictive channels
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Slow clock} (every 16 steps): repair decisions, growth
+  control, developmental stage assignment, setpoint-guided remodeling
+  \end{quote}
+\end{itemize}
+
+This three-clock separation is a deliberate design choice. It prevents
+fast task dynamics from overwriting slow anatomical structure, mirroring
+how biological systems separate immediate reactivity from developmental
+timescales.
+
+\hypertarget{state-variables}{%
+\subsubsection{2.2 State variables}\label{state-variables}}
+
+Each cell in the body carries:
+
+\begin{itemize}
+\item
+  \begin{quote}
+  \textbf{Core state}: hidden representation, membrane potential,
+  energy, stress, plasticity, commitment
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Identity}: role logits, developmental stage (seed →
+  exploratory → differentiating → mature → dedifferentiating → prunable)
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Setpoint memory}: z\_alignment (currently expressed setpoint
+  agreement) and z\_memory (slower hidden anatomical memory)
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Connectivity}: conductance matrix governing inter-cell
+  coupling strength
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Growth control}: growth pressure, cooldown, activity tracking,
+  and bookkeeping for repair vs. decorative growth classification
+  \end{quote}
+\end{itemize}
+
+\hypertarget{local-cell-dynamics}{%
+\subsubsection{2.3 Local cell dynamics}\label{local-cell-dynamics}}
+
+The fast cell update combines:
+
+\begin{itemize}
+\item
+  \begin{quote}
+  Prediction error against a nominal target
+  \end{quote}
+\item
+  \begin{quote}
+  Conductance-weighted neighborhood coupling
+  \end{quote}
+\item
+  \begin{quote}
+  Z-alignment drive (weight 0.25) and field-alignment drive (weight
+  0.10)
+  \end{quote}
+\item
+  \begin{quote}
+  Stress and plasticity regulation
+  \end{quote}
+\end{itemize}
+
+All update weights are deliberately small. The organism coheres through
+many weakly coupled mechanisms rather than one dominant controller.
+
+\hypertarget{metabolism}{%
+\subsubsection{2.4 Metabolism}\label{metabolism}}
+
+Metabolic costs rise with plasticity, stress, field mismatch, and growth
+pressure. Recovery rises with field alignment, Z-support, and low
+stress. This makes adaptation genuinely costly and prevents the organism
+from appearing adaptive by spending unbounded energy.
+
+\hypertarget{conductance-and-communication}{%
+\subsubsection{2.5 Conductance and
+communication}\label{conductance-and-communication}}
+
+Cells with matching membrane state and stress couple more strongly;
+stressed or incoherent neighborhoods decouple. Coordination is therefore
+a consequence of local physiological agreement, not a static wiring
+assumption.
+
+\hypertarget{setpoint-memory-z-field}{%
+\subsubsection{2.6 Setpoint memory
+(Z-field)}\label{setpoint-memory-z-field}}
+
+The Z-field is one of the most important architectural components:
+
+\begin{itemize}
+\item
+  \begin{quote}
+  z\_alignment tracks currently expressed agreement with the anatomical
+  scaffold
+  \end{quote}
+\item
+  \begin{quote}
+  z\_memory stores a slower hidden version of that scaffold (update
+  rate: 0.0125)
+  \end{quote}
+\end{itemize}
+
+This split enables what we call "cryptic rewrite": a hidden anatomical
+change can persist even when visible phenotype is partially overwritten.
+This is analogous to how biological organisms maintain morphogenetic
+memory that is not directly visible in current tissue state.
+
+\hypertarget{repair}{%
+\subsubsection{2.7 Repair}\label{repair}}
+
+Three repair paths operate in the body:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \begin{quote}
+  \textbf{Parameter drift repair}: detects incoherence through hidden
+  consensus gap, membrane neighbor gap, Z-memory gap, and role disorder;
+  repairs toward neighbor consensus blended with stored Z-memory
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Port-region repair}: boundary-local recoupling and
+  donor-support sharing for port-adjacent injuries
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Distressed-region repair}: general setpoint-guided healing
+  using neighbor state and Z-memory
+  \end{quote}
+\end{enumerate}
+
+\hypertarget{growth-control}{%
+\subsubsection{2.8 Growth control}\label{growth-control}}
+
+Growth is driven by real need (stress, field mismatch, setpoint
+mismatch, predictive error) and suppressed by cooldown. Growth
+eligibility requires sufficient pressure, energy, stress, and
+active-need fraction simultaneously. Every growth event is classified as
+repair-oriented, bottleneck-oriented, or decorative, and audited.
+
+\hypertarget{ports}{%
+\subsubsection{2.9 Ports}\label{ports}}
+
+Ports are explicit boundary interfaces between the organism and task
+environments. They define boundary windows, support bands, input/readout
+attenuation, and remap shifts. Task-specific code lives entirely in the
+port layer; the body core remains task-agnostic.
+
+Implemented port families: visual (MNIST/FashionMNIST), rule (sequential
+symbolic), control (gridworld), and pattern (remap assays).
+
+\hypertarget{experimental-methodology}{%
+\subsection{3. Experimental
+Methodology}\label{experimental-methodology}}
+
+\hypertarget{assay-gated-progression}{%
+\subsubsection{3.1 Assay-gated
+progression}\label{assay-gated-progression}}
+
+The v1.3 build used a strict phase-gated progression. No later phase was
+accepted until earlier phases passed:
+
+\includegraphics[width=6.925in,height=5.14167in]{vertopal_6e525fe6863342d18c048d95760e16e4/media/image1.png}\emph{\textbf{Figure
+1: Master Build Ladder Status.} The strict, phase-gated progression of
+MorphoBASE v1.3. Foundational physiological survival and repair
+mechanisms (Phases 0--3) act as mandatory prerequisites before the
+system is permitted to evaluate visual (Stack C) and non-visual (Stack
+D) task bridges.}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0683}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2316}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.7001}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\raggedright
+Phase
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Focus
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Assays
+\end{minipage} \\
+\midrule()
+\endhead
+0 & Substrate survival & smoke \\
+1 & Identity and repair & identity, wound\_closure,
+stress\_recruitment \\
+2 & Growth and plasticity & growth\_usefulness, compensation\_block,
+plasticity\_stress \\
+3 & Memory and perturbation & setpoint\_rewrite, lightcone,
+lesion\_battery, lesion\_preserves\_competence, port\_remap \\
+C & Visual bridges & split\_mnist, permuted\_mnist,
+split\_fashion\_mnist, permuted\_fashion\_mnist \\
+D & Non-visual bridges & gridworld\_remap, sequential\_rules \\
+--- & Lesion+task bridges & lesion\_split\_mnist,
+lesion\_sequential\_rules, lesion\_gridworld\_remap \\
+\bottomrule()
+\end{longtable}
+
+\hypertarget{evidence-standards}{%
+\subsubsection{3.2 Evidence standards}\label{evidence-standards}}
+
+A mechanism was accepted only when it had:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \begin{quote}
+  Implementation
+  \end{quote}
+\item
+  \begin{quote}
+  Diagnostics
+  \end{quote}
+\item
+  \begin{quote}
+  At least one dedicated assay
+  \end{quote}
+\item
+  \begin{quote}
+  Ablation or matched control
+  \end{quote}
+\end{enumerate}
+
+This means the results reported below are supported by causal evidence
+(what happens when you remove the mechanism), not just correlation.
+
+\hypertarget{seed-robustness}{%
+\subsubsection{3.3 Seed robustness}\label{seed-robustness}}
+
+All benchmark results are reported across 5 random seeds. A result is
+considered stable only if the standard deviation is bounded and the
+mechanism-support pattern holds across seeds.
+
+\hypertarget{results}{%
+\subsection{4. Results}\label{results}}
+
+\hypertarget{lesion-recovery}{%
+\subsubsection{4.1 Lesion recovery}\label{lesion-recovery}}
+
+\textbf{Source}: lesion\_battery assay (8 lesion types including
+parameter corruption, region knockout, conductance disruption, port
+disruption)
+
+\includegraphics[width=6.925in,height=3.13194in]{vertopal_6e525fe6863342d18c048d95760e16e4/media/image2.png}\emph{\textbf{Figure
+2: Lesion Recovery by Injury Class.} Morphological recovery percentages
+across eight distinct injury types. The organismal recovery mechanics
+consistently match or outperform gradient-free recovery baselines,
+demonstrating that repair is driven by internal maintenance dynamics
+rather than hidden retraining.}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.6616}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3384}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\raggedright
+Metric
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Value
+\end{minipage} \\
+\midrule()
+\endhead
+Mean morphological recovery & 84.95\% \\
+Recovery vs. full retraining & 76.64\% \\
+Recovery without gradients & 116.84\% of gradient recovery \\
+Repeated injury resilience vs. retraining & 83.37\% \\
+Recovery probability (fraction of lesions showing recovery) & 77.78\% \\
+Mean recovery time & 69.56 steps \\
+Port boundary locality advantage & 3.49 \\
+\bottomrule()
+\end{longtable}
+
+The gradient-free recovery ratio exceeding 1.0 is noteworthy: the
+organism\textquotesingle s physiological repair mechanisms (neighbor
+consensus, Z-memory guidance, port-region recoupling) actually
+outperform what gradient-based correction alone achieves during rollout.
+This is evidence that recovery is driven by the
+organism\textquotesingle s own maintenance dynamics, not by hidden
+retraining.
+
+\textbf{Honest caveat}: isolated port-disruption recovery remains the
+weakest lesion family.
+
+\hypertarget{competence-preservation-after-injury}{%
+\subsubsection{4.2 Competence preservation after
+injury}\label{competence-preservation-after-injury}}
+
+\textbf{Source}: lesion\_preserves\_competence assay
+
+\includegraphics[width=6.925in,height=3.77222in]{vertopal_6e525fe6863342d18c048d95760e16e4/media/image3.png}\emph{\textbf{Figure
+3: Top-Line Organismal Robustness and Competence.} Aggregate performance
+showing 85.0\% mean morphological recovery and 98.9\% competence
+retention post-injury. The gradient-free recovery ratio of 1.17x
+highlights that physiological repair outperforms standard gradient-based
+rollout correction.}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.7927}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2073}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\raggedright
+Metric
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Value
+\end{minipage} \\
+\midrule()
+\endhead
+Competence retention ratio & 98.94\% \\
+Supported task families & 2 \\
+Post-recovery competence & 73.04\% \\
+No-gradient post-recovery competence & 68.37\% \\
+Organismal competence vs. retraining & 100.12\% \\
+\bottomrule()
+\end{longtable}
+
+This is the result that most directly tests the Levin-inspired thesis:
+injury to the body should not destroy task competence if that competence
+is embedded in organismal maintenance rather than fragile parameter
+tuning. The 98.94\% retention ratio across two task families supports
+this claim.
+
+\hypertarget{setpoint-memory-and-cryptic-rewrite}{%
+\subsubsection{4.3 Setpoint memory and cryptic
+rewrite}\label{setpoint-memory-and-cryptic-rewrite}}
+
+\textbf{Source}: setpoint\_rewrite assay
+
+\includegraphics[width=6.925in,height=2.99653in]{vertopal_6e525fe6863342d18c048d95760e16e4/media/image4.png}\emph{\textbf{Figure
+4: Setpoint Memory and Cryptic Rewrite Evidence.} Analysis of hidden
+anatomical memory across rewrite modes. The left panel shows the
+separation between the expressed state and the hidden z-memory gap,
+while the right panel demonstrates cycle-by-cycle persistence,
+confirming the existence of a durable morphogenetic scaffold.}
+
+All three rewrite modes (stress bias, field bias, direct injection)
+produce measurable anatomical change. The hidden z\_memory gap advantage
+of 0.40 means the slow anatomical memory diverges substantially from
+expressed state --- evidence for a genuine hidden morphogenetic
+scaffold.
+
+\textbf{Honest caveat}: the aggregate top-level cryptic\_shift metric is
+currently negative. The strongest evidence is persistence and
+hidden-memory separation, not a uniformly positive single summary
+scalar.
+
+\hypertarget{perturbation-propagation-light-cone}{%
+\subsubsection{4.4 Perturbation propagation (light
+cone)}\label{perturbation-propagation-light-cone}}
+
+\textbf{Source}: lightcone assay
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4317}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5683}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\raggedright
+Metric
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Value
+\end{minipage} \\
+\midrule()
+\endhead
+Light cone area & 4,032 \\
+Light cone duration & 168 steps \\
+Total effect magnitude & 1,134.51 \\
+Ablation-supported mechanisms & 3 (stress sharing, conductance,
+Z-memory) \\
+\bottomrule()
+\end{longtable}
+
+The light cone is large, but more importantly it changes in
+interpretable ways under channel-specific ablation. Removing stress
+sharing, conductance, or Z-memory each produce measurably different
+light cone profiles. This makes the light cone causal evidence for the
+organism\textquotesingle s communication architecture, not just a large
+activity plume. \emph{(Note: Light cone ablation support is visualized
+in Section 5 alongside the communication architecture).}
+
+\hypertarget{selective-growth}{%
+\subsubsection{4.5 Selective growth}\label{selective-growth}}
+
+\textbf{Source}: growth\_usefulness assay
+
+\includegraphics[width=6.925in,height=3.81806in]{vertopal_6e525fe6863342d18c048d95760e16e4/media/image5.png}\emph{\textbf{Figure
+5: Selective Growth Utility.} Evaluation of growth events showing
+positive utility and efficiency gains. A decorative growth fraction of
+exactly 0.000 confirms that all physiological expansion is strictly
+functional, bottleneck-oriented, or repair-driven, effectively
+suppressing metabolic waste.}
+
+Growth is now selective: it occurs in response to need (stress, field
+mismatch, setpoint mismatch), is repair-oriented, and produces
+measurable benefit by lesion-focused value-per-cost criteria. Decorative
+growth --- growth that consumes resources without improving repair or
+competence --- has been completely suppressed.
+
+\textbf{Honest caveat}: total global energy does not simply improve in
+every comparison. The criterion is repair benefit per cost, not raw
+unused reserve.
+
+\hypertarget{boundary-local-adaptation-port-remap}{%
+\subsubsection{4.6 Boundary-local adaptation (port
+remap)}\label{boundary-local-adaptation-port-remap}}
+
+\textbf{Source}: port\_remap assay
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.7542}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2458}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\raggedright
+Metric
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Value
+\end{minipage} \\
+\midrule()
+\endhead
+Supported port families & 2 \\
+Supported remap modes & 3 \\
+Boundary locality ratio & 1.69 \\
+Competence retention ratio & 98.24\% \\
+Post-recovery competence & 78.11\% \\
+\bottomrule()
+\end{longtable}
+
+When the interface to the organism is remapped (analogous to sensory
+rewiring), adaptation remains localized near the boundary rather than
+diffusing through the body. This is consistent with the biological
+observation that sensory remapping produces local cortical
+reorganization, not global brain rewiring.
+
+\hypertarget{benchmark-bridges}{%
+\subsubsection{4.7 Benchmark bridges}\label{benchmark-bridges}}
+
+These benchmarks validate that the organism\textquotesingle s internal
+mechanisms produce real task competence. They are not the primary
+contribution.
+
+\includegraphics[width=6.925in,height=2.84792in]{vertopal_6e525fe6863342d18c048d95760e16e4/media/image6.png}\emph{\textbf{Figure
+6: Visual and Non-Visual Benchmark Performance.} Task accuracy and
+success rates across Stack C (visual) and Stack D (control/symbolic)
+task bridges. The error bars represent stability across 5 random seeds.
+Ablation controls (No Growth, No Stress, No Z-Field) confirm that task
+competence is causally linked to intact organismal physiology.}
+
+\hypertarget{visual-continual-learning-stack-c}{%
+\paragraph{Visual continual learning (Stack
+C)}\label{visual-continual-learning-stack-c}}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2716}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1686}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0750}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1139}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1294}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2415}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\raggedright
+Benchmark
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Mean Accuracy
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Std
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Forgetting
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Seed-Stable
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Mechanism-Supported
+\end{minipage} \\
+\midrule()
+\endhead
+Split-MNIST & 35.67\% & 4.16\% & 0.125 & Yes & 3/3 ablations \\
+Permuted-MNIST & 27.44\% & 1.49\% & 0.060 & Yes & 3/3 ablations \\
+Split-FashionMNIST & 47.33\% & 5.44\% & 0.188 & Yes & 3/3 ablations \\
+Permuted-FashionMNIST & 26.96\% & 1.57\% & 0.005 & Yes & 3/3
+ablations \\
+\bottomrule()
+\end{longtable}
+
+For context: random chance on 10-class classification is 10\%. These
+scores are 2.7--4.7x chance. State-of-the-art continual learning methods
+achieve 90\%+ on these benchmarks. MorphoBASE is not competing on this
+axis.
+
+What matters here is:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \begin{quote}
+  All four benchmarks are \textbf{seed-stable} across 5 seeds
+  \end{quote}
+\item
+  \begin{quote}
+  All four are \textbf{mechanism-supported}: ablating growth, stress, or
+  Z-field produces measurable performance changes, confirming that task
+  competence depends on organismal mechanisms
+  \end{quote}
+\item
+  \begin{quote}
+  Permuted-FashionMNIST shows \textbf{very low forgetting} (0.005) and
+  \textbf{positive backward transfer} (BWT = +0.025), meaning earlier
+  tasks actually improve slightly after later learning --- a signature
+  of genuine knowledge consolidation rather than interference
+  \end{quote}
+\end{enumerate}
+
+\hypertarget{non-visual-control-and-symbolic-tasks-stack-d}{%
+\paragraph{Non-visual control and symbolic tasks (Stack
+D)}\label{non-visual-control-and-symbolic-tasks-stack-d}}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2059}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1946}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0803}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1219}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1385}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2586}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\raggedright
+Benchmark
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Mean Score
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Std
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Forgetting
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Seed-Stable
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Mechanism-Supported
+\end{minipage} \\
+\midrule()
+\endhead
+Gridworld Remap & 81.67\% success & 0.0\% & 0.0 & Yes & 3/3 ablations \\
+Sequential Rules & 84.67\% accuracy & 2.45\% & 0.021 & Yes & 3/3
+ablations \\
+\bottomrule()
+\end{longtable}
+
+These non-visual tasks are substantially stronger. Gridworld Remap is
+the cleanest result in the entire project: perfectly stable across seeds
+with zero forgetting. Sequential Rules shows low forgetting (0.021) with
+a tight standard deviation.
+
+These results demonstrate that the organism is a general substrate, not
+a visual-task-specific architecture.
+
+\hypertarget{lesion-aware-task-bridges}{%
+\paragraph{Lesion-aware task bridges}\label{lesion-aware-task-bridges}}
+
+Under lesion conditions, the organism retains task competence while
+ablation baselines degrade:
+
+\begin{itemize}
+\item
+  \begin{quote}
+  \textbf{Lesion Sequential Rules}: organism retains 58.33\% accuracy;
+  no-growth drops to 50.00\%, no-Z-field drops to 46.67\%
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Lesion Gridworld Remap}: organism retains function; ablation
+  shows Z-field dependency
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Lesion Split-MNIST}: organism retains function under damage
+  \end{quote}
+\end{itemize}
+
+\hypertarget{organism-vs.-baseline-comparison}{%
+\subsubsection{4.8 Organism vs. baseline
+comparison}\label{organism-vs.-baseline-comparison}}
+
+\includegraphics[width=6.925in,height=2.83889in]{vertopal_6e525fe6863342d18c048d95760e16e4/media/image7.png}\emph{\textbf{Figure
+7: Lesion-Aware Competence vs. Baselines.} A comparison of task
+retention after injury. MorphoBASE explicitly prioritizes repair and
+retained competence over raw, undamaged benchmark scores, outperforming
+static MLP and Transformer baselines when evaluated under damage-aware
+conditions.}
+
+The organism is strongest when the task rewards repair, remap, and
+persistence. It is not trying to beat transformers or MLPs on raw
+undamaged benchmark score.
+
+\hypertarget{frontier-mechanisms-exploratory}{%
+\subsection{5. Frontier mechanisms
+(exploratory)}\label{frontier-mechanisms-exploratory}}
+
+\includegraphics[width=6.925in,height=2.76458in]{vertopal_6e525fe6863342d18c048d95760e16e4/media/image8.png}\emph{\textbf{Figure
+8: Communication Architecture and Frontier Probes.} Evidence supporting
+the organism\textquotesingle s multi-channel communication framework.
+The left panel displays the spatial localization ratios of five
+exploratory channels, ensuring bounded behavior. The right panel
+demonstrates a causal "light cone" of perturbation, which changes
+interpretably when specific channels (Z-Memory, Conductance, Stress
+Sharing) are ablated.}
+
+Five additional communication channels are implemented but designated as
+non-gating exploratory probes:
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5270}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.4730}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\raggedright
+Channel
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Localization Ratio
+\end{minipage} \\
+\midrule()
+\endhead
+Tissue fields & 3.07 \\
+Oscillatory coupling & 22.57 \\
+Reaction-diffusion & 10.10 \\
+Stigmergic highways & 12.64 \\
+Predictive coding & 21.45 \\
+\bottomrule()
+\end{longtable}
+
+These channels are active, bounded, and locally interpretable. They are
+not yet promoted to required organism claims because their causal
+contribution to task competence has not been fully isolated.
+
+\hypertarget{limitations}{%
+\subsection{6. Limitations}\label{limitations}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \begin{quote}
+  \textbf{Visual benchmark performance is low.} 27--47\% on
+  MNIST/FashionMNIST variants is well below specialized continual
+  learning methods. This is a real limitation if the goal is task
+  performance; it is expected if the goal is demonstrating
+  organism-first principles.
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Setpoint rewrite evidence is mixed.} The strongest evidence is
+  persistence and hidden-memory separation. The aggregate cryptic\_shift
+  metric is not uniformly positive.
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Port disruption is the weakest lesion class.} The organism
+  recovers well from most injury types, but isolated port disruption
+  remains the least comfortable recovery story.
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Scale is small.} The current organism has 64 cells with
+  32-dimensional hidden state. Whether these properties survive scaling
+  is an open question.
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{No ecology.} The current system is a single organism.
+  Multi-organism interaction, competition, and collective behavior are
+  future work.
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Frontier channels are unproven.} Oscillatory coupling,
+  reaction-diffusion, stigmergy, and predictive coding are implemented
+  and active, but their causal necessity is not yet established.
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{The system was developed with AI assistance.} Architecture
+  design, implementation, and debugging were conducted in collaboration
+  with Claude (Anthropic). The experimental results are from actual code
+  execution, not generated text.
+  \end{quote}
+\end{enumerate}
+
+\hypertarget{discussion}{%
+\subsection{7. Discussion}\label{discussion}}
+
+\hypertarget{what-this-demonstrates}{%
+\subsubsection{7.1 What this
+demonstrates}\label{what-this-demonstrates}}
+
+MorphoBASE v1.3 provides evidence that a computational system organized
+around explicit physiology can exhibit properties that are typically
+difficult to achieve in standard neural networks:
+
+\begin{itemize}
+\item
+  \begin{quote}
+  \textbf{Repair without retraining}: the organism recovers from diverse
+  injuries through its own maintenance dynamics, not through gradient
+  descent during recovery
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Competence preservation through body maintenance}: task
+  performance survives injury because the body that supports it survives
+  injury
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Anatomical memory}: a hidden setpoint scaffold persists
+  independently of expressed state and guides repair
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Selective growth}: the system adds resources only when
+  physiological need justifies the metabolic cost
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Boundary-local adaptation}: interface changes produce
+  localized reorganization, not global disruption
+  \end{quote}
+\end{itemize}
+
+These properties are individually achievable through specialized ML
+techniques. What is novel is that they emerge together from a single
+coherent physiological substrate without benchmark-specific engineering.
+
+\hypertarget{relationship-to-levins-framework}{%
+\subsubsection{7.2 Relationship to Levin\textquotesingle s
+framework}\label{relationship-to-levins-framework}}
+
+MorphoBASE is a computational exploration of ideas developed in the
+biological context by Levin and colleagues. Several correspondences are
+intentional:
+
+\begin{itemize}
+\item
+  \begin{quote}
+  \textbf{Multi-scale competency}: individual cells make local
+  homeostatic decisions; coordination emerges through coupling, not
+  central control
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Bioelectric setpoints}: the Z-memory field serves as an
+  anatomical target state analogous to bioelectric prepatterns
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Gap junction-mediated coordination}: the conductance matrix
+  modulates inter-cell coupling based on physiological agreement,
+  analogous to gap junction gating
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Repair as goal-directed behavior}: recovery is guided by
+  stored anatomical memory, not by externally imposed correction
+  \end{quote}
+\end{itemize}
+
+MorphoBASE is not a faithful simulation of biological tissue. It is a
+computational substrate that takes these organizational principles
+seriously and tests whether they produce measurable functional
+properties.
+
+\hypertarget{what-this-does-not-demonstrate}{%
+\subsubsection{7.3 What this does not
+demonstrate}\label{what-this-does-not-demonstrate}}
+
+\begin{itemize}
+\item
+  \begin{quote}
+  This is not a competitive continual learning system. Specialized
+  methods substantially outperform it on benchmarks.
+  \end{quote}
+\item
+  \begin{quote}
+  This is not a model of real biological tissue. The correspondences to
+  biology are organizational, not mechanistic.
+  \end{quote}
+\item
+  \begin{quote}
+  This does not prove that organism-first design is superior to standard
+  ML for practical applications.
+  \end{quote}
+\item
+  \begin{quote}
+  This does not demonstrate multi-scale competency in the full sense
+  described by Levin --- v1.3 has one scale of cellular organization,
+  not nested hierarchies.
+  \end{quote}
+\end{itemize}
+
+\hypertarget{future-directions-v1.4}{%
+\subsection{8. Future Directions (v1.4)}\label{future-directions-v1.4}}
+
+v1.4 extends the organism with:
+
+\begin{itemize}
+\item
+  \begin{quote}
+  \textbf{Explicit shared genome}: a sparse signed regulatory matrix
+  shared by all cells
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Per-cell epigenome}: each cell gates the shared genome with
+  its own accessibility mask, enabling specialization without per-cell
+  dense matrices
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Dual-track bioelectric state}: slow morphogenetic membrane +
+  fast task-relay membrane, preventing fast dynamics from overwriting
+  anatomical structure
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Local homeostatic controller}: belief state, prediction error,
+  precision, and frustration computation per cell
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Voltage-gated junctions}: gap-junction openness dependent on
+  voltage mismatch, stress mismatch, and setpoint agreement
+  \end{quote}
+\end{itemize}
+
+These extensions aim to test four organism-level properties motivated by
+Levin\textquotesingle s 2026 research:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \begin{quote}
+  \textbf{Goal retargetability}: can the organism adopt a changed target
+  and reorganize?
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Boundary management}: can coordinated control be enlarged or
+  contracted through junction manipulation?
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Memory reinterpretation}: can stored traces be reused after
+  changed context?
+  \end{quote}
+\item
+  \begin{quote}
+  \textbf{Cognitive light cone expansion}: does coordinated scope
+  enlarge when coupling and memory support it?
+  \end{quote}
+\end{enumerate}
+
+\hypertarget{availability}{%
+\subsection{9. Availability}\label{availability}}
+
+To foster responsible development and collaboration in organism-inspired
+computation, the complete codebase, configuration files, and
+experimental artifacts are available to verified researchers upon
+request. The system is implemented in Python with PyTorch and requires
+no specialized hardware. Inquiries for access and potential
+collaboration can be directed to the author (vetchj88@gmail.com).
+
+\hypertarget{references}{%
+\subsection{References}\label{references}}
+
+{[}1{]} Levin, M. (2019). The Computational Boundary of a "Self":
+Developmental Bioelectricity Drives Multicellularity and Scale-Free
+Cognition. \emph{Frontiers in Psychology}, 10, 2688.
+
+{[}2{]} Levin, M. (2022). Technological Approach to Mind Everywhere: An
+Experimentally-Grounded Framework for Understanding Diverse Bodies and
+Minds. \emph{Frontiers in Systems Neuroscience}, 16.
+
+{[}3{]} Levin, M. (2023). Darwin\textquotesingle s agential materials:
+evolutionary implications of multiscale competency in developmental
+biology. \emph{Cellular and Molecular Life Sciences}, 80, 142.
+
+{[}4{]} Fields, C., \& Levin, M. (2022). Competency in Navigating
+Arbitrary Spaces as an Invariant for Analyzing Cognition in Diverse
+Embodiments. \emph{Entropy}, 24(6), 819.
+
+{[}5{]} Levin, M., \& Watson, R. (2025). \emph{Machines all the way up
+and cognition all the way down: Updating the machine metaphor in
+biology}. OSF preprint.
+
+\end{document}

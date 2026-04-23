@@ -1,0 +1,8 @@
+base_config: configs/assay/smoke.yaml
+variations:
+  - run:
+      name: smoke_seed_1
+      seed: 1
+  - run:
+      name: smoke_seed_2
+      seed: 2
